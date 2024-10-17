@@ -24,6 +24,7 @@ public class ConsoleApp {
             System.out.println("6. Xuất hóa đơn theo tháng");
             System.out.println("7. Thoát");
             System.out.print("Chọn một thao tác: ");
+
             int choice = scanner.nextInt();
             scanner.nextLine();
 
@@ -38,7 +39,7 @@ public class ConsoleApp {
                     removeInvoice(scanner, useCase);
                     break;
                 case 4:
-                    calculateTotalByCustomerType(scanner, useCase);
+                    calculateCustomerCounts(useCase);
                     break;
                 case 5:
                     calculateAverageForForeigners(useCase);
@@ -69,7 +70,7 @@ public class ConsoleApp {
         System.out.print("Nhập tên khách hàng: ");
         data.setName(scanner.nextLine());
 
-        System.out.print("Khách hàng nước ngoài (nhập quốc tịch) hay Việt Nam (để trống nếu không phải): ");
+        System.out.print("Khách hàng nước ngoài (nhập quốc tịch) hoặc Việt Nam (để trống): ");
         String nationality = scanner.nextLine();
         if (!nationality.isEmpty()) {
             data.setNationality(nationality);
@@ -117,13 +118,10 @@ public class ConsoleApp {
         System.out.println("Hóa đơn đã được xóa.");
     }
 
-    private static void calculateTotalByCustomerType(Scanner scanner, UseCase useCase) {
-        System.out.println("Tính tổng số lượng theo loại khách hàng:");
-        System.out.print("Nhập loại khách hàng (sinh hoạt, kinh doanh, sản xuất): ");
-        String customerType = scanner.nextLine();
-
-        double total = useCase.calculateTotalQuantityByType(customerType);
-        System.out.println("Tổng số lượng tiêu thụ của khách hàng loại " + customerType + " là: " + total);
+    private static void calculateCustomerCounts(UseCase useCase) {
+        long[] counts = useCase.calculateCustomerCounts();
+        System.out.println("Tổng số lượng khách hàng Việt Nam: " + counts[0]);
+        System.out.println("Tổng số lượng khách hàng nước ngoài: " + counts[1]);
     }
 
     private static void calculateAverageForForeigners(UseCase useCase) {

@@ -32,7 +32,7 @@ public class DAOMemory implements DatabaseUseCase {
 
     @Override
     public List<Customer> getAllInvoices() {
-        return List.of();
+        return new ArrayList<>(customers);
     }
 
     @Override

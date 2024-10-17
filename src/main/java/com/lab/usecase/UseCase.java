@@ -3,18 +3,12 @@ package com.lab.usecase;
 import com.lab.entity.Customer;
 import com.lab.entity.CustomerForeigner;
 import com.lab.entity.CustomerVietNam;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
-@NoArgsConstructor
 public class UseCase implements InputUseCase, OutputUseCase {
-    private OutputUseCase outputUseCase;
     private DatabaseUseCase databaseUseCase;
-    private InputUseCase inputUseCase;
 
     public UseCase(DatabaseUseCase databaseUseCase) {
         this.databaseUseCase = databaseUseCase;
@@ -76,12 +70,16 @@ public class UseCase implements InputUseCase, OutputUseCase {
     }
 
     @Override
-    public double calculateTotalQuantityByType(String customerType) {
-        return databaseUseCase.getAllInvoices().stream()
+    public long[] calculateCustomerCounts() {
+        long vietnamCount = databaseUseCase.getAllInvoices().stream()
                 .filter(c -> c instanceof CustomerVietNam)
-                .filter(c -> ((CustomerVietNam) c).getCustomerType().equals(customerType))
-                .mapToDouble(Customer::getQuantity)
-                .sum();
+                .count();
+
+        long foreignerCount = databaseUseCase.getAllInvoices().stream()
+                .filter(c -> c instanceof CustomerForeigner)
+                .count();
+
+        return new long[]{vietnamCount, foreignerCount};
     }
 
     @Override

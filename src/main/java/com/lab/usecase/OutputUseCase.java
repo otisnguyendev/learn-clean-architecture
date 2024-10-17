@@ -5,7 +5,7 @@ import com.lab.entity.Customer;
 import java.util.List;
 
 public interface OutputUseCase {
-    double calculateTotalQuantityByType(String customerType);
+    long[] calculateCustomerCounts();
     double calculateAverageTotalForeigner();
     List<Customer> getInvoicesByMonth(int month, int year);
 }

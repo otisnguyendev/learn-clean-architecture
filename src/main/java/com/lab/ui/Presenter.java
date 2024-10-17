@@ -13,8 +13,8 @@ public class Presenter implements OutputUseCase {
     private OutputUseCase outputUseCase;
 
     @Override
-    public double calculateTotalQuantityByType(String customerType) {
-        return outputUseCase.calculateTotalQuantityByType(customerType);
+    public long[] calculateCustomerCounts() {
+        return outputUseCase.calculateCustomerCounts();
     }
 
     @Override
