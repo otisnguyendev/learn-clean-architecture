@@ -1,8 +1,104 @@
 package com.lab.usecase;
 
-public class UseCase implements InputUseCase{
-    @Override
-    public void inputUseCase() {
+import com.lab.entity.Customer;
+import com.lab.entity.CustomerForeigner;
+import com.lab.entity.CustomerVietNam;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@AllArgsConstructor
+@NoArgsConstructor
+public class UseCase implements InputUseCase, OutputUseCase {
+    private OutputUseCase outputUseCase;
+    private DatabaseUseCase databaseUseCase;
+    private InputUseCase inputUseCase;
+
+    public UseCase(DatabaseUseCase databaseUseCase) {
+        this.databaseUseCase = databaseUseCase;
     }
+
+    @Override
+    public void addInvoice(ReqData data) {
+        if (data.getNationality() == null) {
+            CustomerVietNam customer = new CustomerVietNam();
+            customer.setCustomerID(data.getCustomerId());
+            customer.setFullName(data.getName());
+            customer.setInvoiceDate(data.getInvoiceDate());
+            customer.setQuantity(data.getQuantity());
+            customer.setUnitPrice(data.getUnitPrice());
+            customer.setCustomerType(data.getCustomerType());
+            customer.setLimit(data.getLimit());
+            databaseUseCase.addInvoice(customer);
+        } else {
+            CustomerForeigner customer = new CustomerForeigner();
+            customer.setCustomerID(data.getCustomerId());
+            customer.setFullName(data.getName());
+            customer.setInvoiceDate(data.getInvoiceDate());
+            customer.setQuantity(data.getQuantity());
+            customer.setUnitPrice(data.getUnitPrice());
+            customer.setNationality(data.getNationality());
+            databaseUseCase.addInvoice(customer);
+        }
+    }
+
+    @Override
+    public void updateInvoice(ReqData data) {
+        if (data.getNationality() == null) {
+            CustomerVietNam customer = new CustomerVietNam();
+            customer.setCustomerID(data.getCustomerId());
+            customer.setFullName(data.getName());
+            customer.setInvoiceDate(data.getInvoiceDate());
+            customer.setQuantity(data.getQuantity());
+            customer.setUnitPrice(data.getUnitPrice());
+            customer.setCustomerType(data.getCustomerType());
+            customer.setLimit(data.getLimit());
+
+            databaseUseCase.updateInvoice(customer);
+        } else {
+            CustomerForeigner customer = new CustomerForeigner();
+            customer.setCustomerID(data.getCustomerId());
+            customer.setFullName(data.getName());
+            customer.setInvoiceDate(data.getInvoiceDate());
+            customer.setQuantity(data.getQuantity());
+            customer.setUnitPrice(data.getUnitPrice());
+            customer.setNationality(data.getNationality());
+
+            databaseUseCase.updateInvoice(customer);
+        }
+    }
+
+    @Override
+    public void removeInvoice(String customerId) {
+        databaseUseCase.removeInvoice(customerId);
+    }
+
+    @Override
+    public double calculateTotalQuantityByType(String customerType) {
+        return databaseUseCase.getAllInvoices().stream()
+                .filter(c -> c instanceof CustomerVietNam)
+                .filter(c -> ((CustomerVietNam) c).getCustomerType().equals(customerType))
+                .mapToDouble(Customer::getQuantity)
+                .sum();
+    }
+
+    @Override
+    public double calculateAverageTotalForeigner() {
+        List<Customer> foreignCustomers = databaseUseCase.getAllInvoices().stream()
+                .filter(c -> c instanceof CustomerForeigner)
+                .collect(Collectors.toList());
+
+        return foreignCustomers.stream()
+                .mapToDouble(Customer::calculateTotal)
+                .average()
+                .orElse(0);
+    }
+
+    @Override
+    public List<Customer> getInvoicesByMonth(int month, int year) {
+        return databaseUseCase.getInvoicesByMonth(month, year);
+    }
+
 }

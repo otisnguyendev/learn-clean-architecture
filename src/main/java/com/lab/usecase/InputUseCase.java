@@ -1,5 +1,7 @@
 package com.lab.usecase;
 
 public interface InputUseCase {
-    void inputUseCase();
+    void addInvoice(ReqData data);
+    void removeInvoice(String customerId);
+    void updateInvoice(ReqData data);
 }

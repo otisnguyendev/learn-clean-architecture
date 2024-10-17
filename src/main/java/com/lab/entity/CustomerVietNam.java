@@ -1,29 +1,25 @@
 package com.lab.entity;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomerVietNam extends Customer {
-    private String customerType;
-    private int consumptionLimit;
+    String customerType;
+    double limit;
 
-    public CustomerVietNam(String customerID, String fullName, String billDate, int quantity, double unitPrice, String customerType, int consumptionLimit) {
-        super(customerID, fullName, billDate, quantity, unitPrice);
-        this.customerType = customerType;
-        this.consumptionLimit = consumptionLimit;
-    }
-
-    public String getCustomerType() {
-        return customerType;
-    }
-
-    public void setCustomerType(String customerType) {
-        this.customerType = customerType;
-    }
-
-    public int getConsumptionLimit() {
-        return consumptionLimit;
-    }
-
-    public void setConsumptionLimit(int consumptionLimit) {
-        this.consumptionLimit = consumptionLimit;
+    @Override
+    public double calculateTotal() {
+        if (quantity <= limit) {
+            return quantity * unitPrice;
+        } else {
+            return (limit * unitPrice) + ((quantity - limit) * unitPrice * 2.5);
+        }
     }
 
 }
